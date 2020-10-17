@@ -1,9 +1,9 @@
 --INSERIR UM CLIENTE SOMENTE SE ELE NASCEU APÓS 13/10/1993
 CREATE PROCEDURE CLIENTE_DATA
 @nome varchar(30),
-@endereco varchar(30),
+@endereço varchar(30),
 @telefone varchar(15),
-@e_mail varchar(40),
+@email varchar(40),
 @data_nasc datetime
 AS
 BEGIN
@@ -14,7 +14,7 @@ BEGIN
    
 IF (@nascimento < @validar)
 BEGIN
-   INSERT INTO cliente (nome, data_nasc, endereço, telefone, email) values (@nome, @data_nasc, @endereco, @telefone, @e_mail);
+   INSERT INTO cliente (nome, data_nasc, endereço, telefone, email) values (@nome, @data_nasc, @endereço, @telefone, @email);
 END
 END
 
@@ -24,19 +24,19 @@ CREATE PROCEDURE INSERIR_DIST
 @nome_fantasia varchar(35),
 @razao_social varchar(35),
 @telefone varchar(15),
-@e_mail varchar(25)
+@email varchar(25)
 AS
 BEGIN
     IF(@nome_fantasia <> @razao_social)
     BEGIN 
-    INSERT INTO distribuidores (nome_fantasia, razao_social, telefone, email) values (@nome_fantasia, @razao_social, @telefone, @e_mail);
+    INSERT INTO distribuidores (nome_fantasia, razao_social, telefone, email) values (@nome_fantasia, @razao_social, @telefone, @email);
 END
 END
 
 --INSERIR UM CLIENTE SOMENTE SE SEU NOME TERMINAR COM 'EU'
 CREATE PROCEDURE INSERIR_CLIENTE_EU
 @nome varchar(30),
-@endereco varchar(30),
+@endereço varchar(30),
 @telefone varchar(15),
 @e_mail varchar(40),
 @data_nasc datetime
@@ -44,7 +44,7 @@ AS
 BEGIN
     IF( RIGHT(@nome, 2)= 'eu')
     BEGIN
-    INSERT INTO cliente (nome, data_nasc, endereço, telefone, email) values (@nome, @data_nasc, @endereco, @telefone, @e_mail);
+    INSERT INTO cliente (nome, data_nasc, endereço, telefone, email) values (@nome, @data_nasc, @endereço, @telefone, @e_mail);
 END
 END
 
@@ -84,7 +84,3 @@ BEGIN
      SELECT 'ERRO, CLIENTE INSERIDO NAO EXISTE';
 END
 END
-
-
-
-
