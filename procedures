@@ -1,61 +1,90 @@
-# exbd
-
 --INSERIR UM CLIENTE SOMENTE SE ELE NASCEU APÓS 13/10/1993
-
-create PROCEDURE CLIENTE_DATA
+CREATE PROCEDURE CLIENTE_DATA
 @nome varchar(30),
-@endereco varchar(50),
+@endereco varchar(30),
 @telefone varchar(15),
-@e_mail varchar(30),
+@e_mail varchar(40),
 @data_nasc datetime
 AS
 BEGIN
-
    DECLARE @VALIDAR int;
-   SET @VALIDAR=DATEDIFF(day, '1993-10-13', getdate());+
+   SET @VALIDAR=DATEDIFF(day, '1993-10-13', getdate());
    DECLARE @NASCIMENTO INT;
    SET @NASCIMENTO= DATEDIFF(day, @data_nasc, getdate());
    
 IF (@nascimento < @validar)
 BEGIN
-INSERT INTO tblclientes (nome, data_nasc, endereco, telefone, e_mail) values (@nome, @data_nasc, @endereco, @telefone, @e_mail);
+   INSERT INTO cliente (nome, data_nasc, endereço, telefone, email) values (@nome, @data_nasc, @endereco, @telefone, @e_mail);
 END
-
 END
-
-
 
 
 --INSERIR UM DISTRIBUIDOR SOMENTE SE SEU NOME FANTASIA E RAZÃO SOCIAL FOREM DIFERENTES
 CREATE PROCEDURE INSERIR_DIST
-@nome_fantasia varchar(30),
-@razao_social varchar(30),
+@nome_fantasia varchar(35),
+@razao_social varchar(35),
 @telefone varchar(15),
-@e_mail varchar(30)
+@e_mail varchar(25)
 AS
 BEGIN
-
-IF(@nome_fantasia <> @razao_social)
-BEGIN 
-INSERT INTO tblDistribuidores (nome_fantasia, razao_social, telefone, e_mail) values (@nome_fantasia, @razao_social, @telefone, @e_mail);
+    IF(@nome_fantasia <> @razao_social)
+    BEGIN 
+    INSERT INTO distribuidores (nome_fantasia, razao_social, telefone, email) values (@nome_fantasia, @razao_social, @telefone, @e_mail);
 END
-
 END
 
 --INSERIR UM CLIENTE SOMENTE SE SEU NOME TERMINAR COM 'EU'
 CREATE PROCEDURE INSERIR_CLIENTE_EU
 @nome varchar(30),
-@endereco varchar(50),
+@endereco varchar(30),
 @telefone varchar(15),
-@e_mail varchar(30),
+@e_mail varchar(40),
 @data_nasc datetime
 AS
 BEGIN
+    IF( RIGHT(@nome, 2)= 'eu')
+    BEGIN
+    INSERT INTO cliente (nome, data_nasc, endereço, telefone, email) values (@nome, @data_nasc, @endereco, @telefone, @e_mail);
+END
+END
 
-IF( RIGHT(@nome, 2)= 'eu')
+
+--EXIBIR NOME FANTASIA E RAZÃO SOCIAL APÓS UM PRODUTO NOVO ADICIONADO
+CREATE TRIGGER EXIBIR_NOMEFANTASIA
+ON produtos
+AFTER INSERT AS
 BEGIN
-INSERT INTO tblclientes (nome, data_nasc, endereco, telefone, e_mail) values (@nome, @data_nasc, @endereco, @telefone, @e_mail);
+
+    DECLARE @dist_cod_dist INT;
+
+    SET @dist_cod_dist=(SELECT dist_cod_dist FROM INSERTED);
+
+    SELECT nome_fantasia, razao_social FROM distribuidores WHERE cod_dist=@dist_cod_dist;
 END
 
+
+--EXIBIR NOME, EMAIL DO CLIENTE QUANDO NOVA VENDA ATRIBUIDA A ELE
+CREATE TRIGGER EXB_NOMECLIENTE
+ON vendas
+AFTER INSERT AS 
+BEGIN
+   
+    DECLARE @codigocliente INT;
+    SET @codigocliente=(SELECT cli_cod_cli FROM inserted);
+
+    DECLARE @comparar INT;
+    SET @comparar=(SELECT cod_cli FROM cliente);
+
+    IF(@codigocliente=@comparar)
+    BEGIN
+    SELECT nome, email from cliente WHERE cod_cli=@codigocliente;
+    END
+    ELSE
+    BEGIN
+     SELECT 'ERRO, CLIENTE INSERIDO NAO EXISTE';
 END
+END
+
+
+
 
