@@ -70,17 +70,11 @@ AFTER INSERT AS
 BEGIN
    
     DECLARE @codigocliente INT;
+
     SET @codigocliente=(SELECT cli_cod_cli FROM inserted);
 
-    DECLARE @comparar INT;
-    SET @comparar=(SELECT cod_cli FROM cliente);
-
-    IF(@codigocliente=@comparar)
-    BEGIN
     SELECT nome, email from cliente WHERE cod_cli=@codigocliente;
-    END
-    ELSE
-    BEGIN
-     SELECT 'ERRO, CLIENTE INSERIDO NAO EXISTE';
+  
 END
-END
+
+
